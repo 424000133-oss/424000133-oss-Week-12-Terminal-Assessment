@@ -1,0 +1,74 @@
+import 'dart:async';
+
+abstract class Player {
+  String name;
+  int points;
+
+  Player(this.name, this.points);
+
+  void calculateRank();
+}
+
+mixin BonusCalculator {
+  int calculateBonus(int points) {
+    return (points * 0.10).round();
+  }
+}
+
+class GamingPlayer extends Player with BonusCalculator {
+  GamingPlayer(String name, int points) : super(name, points);
+
+  @override
+  void calculateRank() {
+    int bonus = calculateBonus(points);
+    int totalPoints = points + bonus;
+
+    print("\n===== PLAYER RESULTS =====");
+    print("Player Name: $name");
+    print("Original Points: $points");
+    print("Bonus Points: $bonus");
+    print("Total Points: $totalPoints");
+
+    if (totalPoints >= 1000) {
+      print("Player Rank: Gold");
+    } else if (totalPoints >= 500) {
+      print("Player Rank: Silver");
+    } else {
+      print("Player Rank: Bronze");
+    }
+  }
+}
+
+Future<void> savePlayerData(String name) async {
+  print("\nSaving player data...");
+
+  await Future.delayed(Duration(seconds: 5));
+
+  print("Player data successfully saved!");
+  print("Saved Player: $name");
+}
+
+Future<void> main() async {
+  print("================================");
+  print("       GAMING POINT CALCULATOR");
+  print("================================");
+
+  String playerName = "Andrey";
+  int gamingPoints = 900;
+
+  print("Player Name: $playerName");
+  print("Gaming Points: $gamingPoints");
+
+  if (playerName.trim().isEmpty || gamingPoints < 0) {
+    print("Invalid player information.");
+    return;
+  }
+
+  GamingPlayer player = GamingPlayer(playerName, gamingPoints);
+
+  player.calculateRank();
+
+  await savePlayerData(player.name);
+
+  print("\nThank you for using Gaming Point Calculator!");
+}
